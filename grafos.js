@@ -64,3 +64,165 @@ for (const list of listas) {
   console.log("--------------------------------")
 }
 
+function adjacencias(vertice) { // retorna os nao adjacentes ao *vertice*
+  for (const list of listas) {
+    let dados = list.getDados()
+    if (dados[0] == vertice) {
+      return console.log(dados.slice(1))
+    }
+  }
+  return console.log("nao possui adjacencias")
+}
+
+function there_aresta(vertice1, vertice2, lista) {
+  for (const list of lista) {
+    let dados = list.getDados()
+    if (dados[0] == vertice1) {
+      for (let index = 1; index < dados.length; index++) {
+        if (dados[index] == vertice2) {
+          return console.log("Existe essa aresta")
+        }
+      }
+    }
+  }
+  return console.log("Não existe essa aresta")
+}
+
+function is_euleriano(listas) {
+  for (const list of listas) {
+    if (((list.size - 1) % 2) !== 0) {
+      return console.log("Não é um grafo euleriano")
+    }
+  }
+  return console.log("É um grafo euleriano")
+}
+
+function there_is_eulerianPath(listas) {
+  let controle = 0
+  for (const list of listas) {
+    if ((list.size - 1) % 2 !== 0) {
+      controle++
+    }
+  }
+  if (controle > 2) {
+    return console.log("Não tem caminho euleriano")
+  } else {
+    return console.log("Tem caminho euleriano!")
+  }
+}
+
+function getVertices(vertice, listas) {
+  valores = 0
+  for (const lista of listas) {
+    valores = lista.getDados()
+    if (valores[0] == vertice) {
+      return valores.slice(1);
+    }
+  }
+  return 404
+}
+
+function getAllVertices(listas) {
+  allVertices = []
+  for (const lista of listas) {
+    valores = lista.getDados()
+    allVertices.push(valores[0])
+  }
+  return allVertices
+}
+
+function getAdjacentes(vertice, listas) {
+  adjacentes = []
+  vertices = getVertices(vertice, listas)
+  allVertices = getAllVertices(listas)
+  for (const verticee of allVertices) {
+    if (vertices.includes(verticee)) {
+
+    } else {
+      adjacentes.push(verticee)
+    }
+  }
+  if (Array.isArray(adjacentes)) {
+    //console.log(adjacentes)
+    return adjacentes.slice(1)
+  } else {
+    console.log("vai dar undefined")
+    return undefined
+  }
+}
+
+function getGrau(vertice, listas) {
+  grau = 0
+  for (const lista of listas) {
+    valores = lista.getDados()
+    if (vertice == valores[0]) {
+      grau = lista.size - 1
+      return grau
+    }
+  }
+}
+
+
+function is_hamiltoniano(listas) {
+  vertices = getAllVertices(listas)
+  controle = 0
+  for (const vertice of vertices) {
+    grau1 = getGrau(vertice, listas)
+    adjacentes = getAdjacentes(vertice, listas)
+    console.log(`os vertices nao adjacentes ao ${vertice} é ${adjacentes}`)
+    if (adjacentes != undefined) {
+      for (const adjacente of adjacentes) {
+        grau2 = getGrau(adjacente, listas)
+        console.log("o vertice -> " + vertice)
+        console.log("soma dos graus -> " + (grau1 + grau2))
+        if ((grau1 + grau2) < nVertices) {
+          return console.log("Não é hamiltoniano")
+        }
+      }
+    }
+  }
+  return console.log("é hamiltoniano")
+}
+
+let visitado = []
+function temCaminho(verticeI, verticeF, listas) {
+  visitado.push(verticeI)
+  //console.log(verticeI == verticeF)
+  let adjacentes = getVertices(verticeI, listas);
+  //console.log(adjacentes)
+  for (const adjacente of adjacentes) {
+    //console.log(`o vertice inical ${verticeI} não é igual ao ${adjacente} e nao é igual ao final ${verticeF}`)
+    //console.log(verticeI == verticeF)
+    if (verticeI == verticeF) {
+      let string = `É possivel! \n ${visitado}`
+      return console.log(string)
+    } else {
+      if (!visitado.includes(adjacente)) {
+        //console.log(adjacente)
+        temCaminho(adjacente, verticeF, listas)
+      }
+    }
+
+  }
+}
+
+let controle = 0
+while (controle == 0) {
+  let pergunta = readline.question("qual metodo? [1] retornar adjacencias [2] existencia de aresta [3] Saber se é euleriano [4] Saber se tem caminho euleriano [5] saber se é hamiltoniano [6] Sair ")
+  if (pergunta == "1") {
+    adjacencias(readline.question("Qual o vertice? "), listas)
+  } else if (pergunta == "2") {
+    there_aresta(readline.question("Qual o primeiro vertice "), readline.question("qual o segundo vertice "), listas)
+  } else if (pergunta == "3") {
+    is_euleriano(listas)
+  } else if (pergunta == "4") {
+    there_is_eulerianPath(listas)
+  } else if (pergunta == "5") {
+    is_hamiltoniano(listas)
+  } else if (pergunta == "6") {
+    temCaminho(readline.question("Qual o vertice inicial?"), readline.question("Qual o vertice final"), listas, visitado)
+  } else {
+    controle = 1;
+  }
+}
+
